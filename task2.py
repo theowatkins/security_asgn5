@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import sys
-import os
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from urllib.parse import quote, unquote
