@@ -1,6 +1,8 @@
+#!/bin/usr/python3
+
 import os
 from Crypto.Cipher import AES
-from Crypto.Util import Padding
+from Crypto.Util.Padding import pad
 
 def encrypt_file(filename):
 
@@ -16,7 +18,7 @@ def encrypt_file(filename):
     data = data[54:]
 
     # pad data to length divisible by 128
-    data = Padding.pad(data, 128, style='pkcs7')
+    data = pad(data, 128, style='pkcs7')
 
     # generate random key and initialization vector (for CBC)
     key = os.urandom(16)
@@ -43,4 +45,6 @@ def encrypt_file(filename):
 
     with open('ebc.bmp', 'wb') as o:
         o.write((''.join(chr(x) for x in ebc_out)).encode('charmap'))
+
+encrypt_file("mustang.bmp")
 
