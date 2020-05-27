@@ -1,5 +1,3 @@
-#!/bin/usr/python3
-
 import os
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
