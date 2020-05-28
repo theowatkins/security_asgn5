@@ -22,9 +22,21 @@ def verify(enc, cbc):
 	# decrypt the string
 	session = cbc.decrypt(enc)
 	# unpad the string
-	session = unpad(session, 128, style = 'pkcs7')
+	# session = unpad(session, 128, style = 'pkcs7')
 	# convert to real string
-	session = session.decode('utf-8')
+
+	session = list(session)
+
+	for i in range(0, len(session)):
+		# session[i] = binascii.b2a_uu(bytes(session[i]))
+		session[i] = chr(session[i])
+
+	session = ''.join(session)
+
+	print(session)
+
+	# session = binascii.b2a_uu(session)
+	# session = session.decode('utf-8')
 	# # url decode the string
 	# session = unquote(session)
 	return admin_check(session)
@@ -42,10 +54,14 @@ def byte_xor(b1, b2):
 def bit_flip_attack(encrypted):
 	inject = b";admin=true;"
 	i = 0
-	
-	encrypted = bytearray(encrypted)
+	filler = b"serdata=eeee"
 
-	for b in byte_xor(bytes(encrypted[:12]), inject):
+	X = byte_xor(filler, inject)
+
+	encrypted = bytearray(encrypted)
+	print(len(encrypted))
+
+	for b in byte_xor(bytes(encrypted[:12]), X):
 		encrypted[i] = b
 		i += 1
 
@@ -59,6 +75,7 @@ def main():
 	cbc2 = AES.new(key, AES.MODE_CBC, iv)
 
 	user_input = input("enter an arbitrary string: ")
+	print()
 	encrypted = submit(user_input, cbc1)
 	encrypted = bit_flip_attack(encrypted)
 	result = verify(encrypted, cbc2)
