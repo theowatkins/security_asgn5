@@ -22,7 +22,7 @@ def verify(enc, cbc):
 	# decrypt the string
 	session = cbc.decrypt(enc)
 	# unpad the string
-	# session = unpad(session, 128, style = 'pkcs7')
+	session = unpad(session, 128, style = 'pkcs7')
 	# convert to real string
 
 	session = list(session)
@@ -35,7 +35,6 @@ def verify(enc, cbc):
 
 	print(session)
 
-	# session = binascii.b2a_uu(session)
 	# session = session.decode('utf-8')
 	# # url decode the string
 	# session = unquote(session)
@@ -54,12 +53,11 @@ def byte_xor(b1, b2):
 def bit_flip_attack(encrypted):
 	inject = b";admin=true;"
 	i = 0
-	filler = b"serdata=eeee"
+	filler = b"serdata%3Dee"
 
 	X = byte_xor(filler, inject)
 
 	encrypted = bytearray(encrypted)
-	print(len(encrypted))
 
 	for b in byte_xor(bytes(encrypted[:12]), X):
 		encrypted[i] = b
@@ -74,8 +72,7 @@ def main():
 	cbc1 = AES.new(key, AES.MODE_CBC, iv)
 	cbc2 = AES.new(key, AES.MODE_CBC, iv)
 
-	user_input = input("enter an arbitrary string: ")
-	print()
+	user_input = input("in order to successfully perform the bit flipping attack, your string must start with two 'e's.\nenter an arbitrary string: ")
 	encrypted = submit(user_input, cbc1)
 	encrypted = bit_flip_attack(encrypted)
 	result = verify(encrypted, cbc2)
