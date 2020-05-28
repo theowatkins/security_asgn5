@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
+import os
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from urllib.parse import quote, unquote
+import binascii
 
 def submit(arb, cbc):
 	# generate string
@@ -43,6 +45,7 @@ def main():
 
 	user_input = input("enter an arbitrary string: ")
 	encrypted = submit(user_input, cbc1)
+	# print(bin(int.from_bytes(encrypted, byteorder = "big"))[2:])
 	result = verify(encrypted, cbc2)
 
 	if result:
@@ -51,3 +54,5 @@ def main():
 		print("not admin")
 
 main()
+
+# use the pdf sent by nicole pg 62
