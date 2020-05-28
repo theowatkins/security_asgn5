@@ -36,6 +36,21 @@ def admin_check(string):
 				return True
 	return False
 
+def byte_xor(b1, b2):
+    return bytearray([a ^ b for a, b in zip(b1, b2)])
+
+def bit_flip_attack(encrypted):
+	inject = b";admin=true;"
+	i = 0
+	
+	encrypted = bytearray(encrypted)
+
+	for b in byte_xor(bytes(encrypted[:12]), inject):
+		encrypted[i] = b
+		i += 1
+
+	return bytes(encrypted)
+
 def main():
 	# generate new AES object
 	key = os.urandom(16)
@@ -45,7 +60,7 @@ def main():
 
 	user_input = input("enter an arbitrary string: ")
 	encrypted = submit(user_input, cbc1)
-	# print(bin(int.from_bytes(encrypted, byteorder = "big"))[2:])
+	encrypted = bit_flip_attack(encrypted)
 	result = verify(encrypted, cbc2)
 
 	if result:
